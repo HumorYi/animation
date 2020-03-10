@@ -1,0 +1,121 @@
+<!--
+ * @Author: Bamboo
+ * @AuthorEmail: bamboo8493@126.com
+ * @AuthorDescription: 爆炸按钮
+ * @Modifier:
+ * @ModifierEmail:
+ * @ModifierDescription:
+ * @Date: 2020-02-22 00:07:28
+ * @LastEditTime: 2020-03-02 09:23:58
+-->
+<template>
+  <button class="btn btn-pink btn-bubbles" :class="className">{{ text }}</button>
+</template>
+
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator'
+
+@Component
+export default class Explode extends Vue {
+  @Prop({
+    type: String,
+    required: true
+  })
+  private readonly text!: string
+
+  @Prop({
+    type: String,
+    default: ''
+  })
+  private readonly className!: string
+}
+</script>
+
+<style lang="sass" scoped>
+@function sample($list)
+  @return nth($list, random(length($list)))
+
+@function bubbles($color, $count: 16)
+  $bubbles: ()
+  // define your own bubbles here!
+  $bubble-types: (radial-gradient(circle, $color 20%, transparent 20%), radial-gradient(circle, transparent 20%, $color 20%, transparent 30%))
+
+  @for $i from 1 through $count
+    $bubbles: append($bubbles, sample($bubble-types), comma)
+
+  @return $bubbles
+
+@function random_range($min, $max)
+  @return $min + floor(random() * (($max - $min) + 1))
+
+@function random_sizes($count: 16)
+  $sizes: ()
+
+  @for $i from 1 through $count
+    $sizes: append($sizes, (random_range(10, 20) * 1%) (random_range(10, 20) * 1%), comma)
+
+  @return $sizes
+
+.btn
+  --hue: 190
+  --btn-bg-color: hsl(var(--hue), 100%, 50%)
+  --btn-bg-color-darker: hsl(var(--hue), 100%, 45%)
+  position: relative
+  padding: 15px 20px
+  font-size: 16px
+  color: white
+  text-decoration: none
+  background-color: var(--btn-bg-color)
+  border: 1px solid var(--btn-bg-color)
+  border-radius: 4px
+  box-shadow: 0 0.1px 0.7px rgba(233, 30, 99, 0.141), 0 0.1px 1.7px rgba(233, 30, 99, 0.202), 0 0.3px 3.1px rgba(233, 30, 99, 0.25), 0 0.4px 5.6px rgba(233, 30, 99, 0.298), 0 0.8px 10.4px rgba(233, 30, 99, 0.359), 0 2px 25px rgba(233, 30, 99, 0.5)
+
+  outline: transparent
+  overflow: hidden
+  cursor: pointer
+  user-select: none
+  white-space: nowrap
+  transition: 0.25s
+
+  &-pink
+    --hue: 330
+
+  &-bubbles
+    overflow: visible
+    transition: transform ease-in 0.1s, background-color ease-in 0.1s, box-shadow ease-in 0.25s
+
+    &:before
+      position: absolute
+      content: ""
+      left: -30px
+      right: -30px
+      top: -30px
+      bottom: -30px
+      transition: ease-in-out 0.5s
+      background-repeat: no-repeat
+      background-image: bubbles(var(--btn-bg-color))
+      background-size: random_sizes()
+      background-position: 18% 40%, 20% 31%, 30% 30%, 40% 30%, 50% 30%, 57% 30%, 65% 30%, 80% 32%, 15% 60%, 83% 60%, 18% 70%, 25% 70%, 41% 70%, 50% 70%, 64% 70%, 80% 71%
+      animation: bubbles ease-in-out 0.75s forwards
+
+    &:active
+      transform: scale(0.95)
+      background: var(--btn-bg-color-darker)
+
+      &:before
+        // when the clicked mouse is up, trigger the animation.
+        animation: none
+        background-size: 0
+
+@keyframes bubbles
+  0%
+    background-position: 18% 40%, 20% 31%, 30% 30%, 40% 30%, 50% 30%, 57% 30%, 65% 30%, 80% 32%, 15% 60%, 83% 60%, 18% 70%, 25% 70%, 41% 70%, 50% 70%, 64% 70%, 80% 71%
+
+  50%
+    background-position: 10% 44%, 0% 20%, 15% 5%, 30% 0%, 42% 0%, 62% -2%, 75% 0%, 95% -2%, 0% 80%, 95% 55%, 7% 100%, 24% 100%, 41% 100%, 55% 95%, 68% 96%, 95% 100%
+
+  100%
+    background-position: 5% 44%, -5% 20%, 7% 5%, 23% 0%, 37% 0, 58% -2%, 80% 0%, 100% -2%, -5% 80%, 100% 55%, 2% 100%, 23% 100%, 42% 100%, 60% 95%, 70% 96%, 100% 100%
+
+    background-size: 0% 0%
+</style>
